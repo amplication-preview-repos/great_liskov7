@@ -1,0 +1,67 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Mentor {
+  age        Int?
+  createdAt  DateTime  @default(now())
+  experience String?
+  id         String    @id @default(cuid())
+  name       String?
+  sessions   Session[]
+  skills     String?
+  updatedAt  DateTime  @updatedAt
+}
+
+model Mentee {
+  age         Int?
+  createdAt   DateTime  @default(now())
+  id          String    @id @default(cuid())
+  name        String?
+  preferences String?
+  sessions    Session[]
+  skills      String?
+  updatedAt   DateTime  @updatedAt
+}
+
+model Session {
+  createdAt DateTime              @default(now())
+  date      DateTime?
+  duration  Int?
+  feedbacks Feedback[]
+  id        String                @id @default(cuid())
+  mentee    Mentee?               @relation(fields: [menteeId], references: [id])
+  menteeId  String?
+  mentor    Mentor?               @relation(fields: [mentorId], references: [id])
+  mentorId  String?
+  typeField EnumSessionTypeField?
+  updatedAt DateTime              @updatedAt
+}
+
+model Feedback {
+  comments  String?
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  rating    Int?
+  session   Session? @relation(fields: [sessionId], references: [id])
+  sessionId String?
+  updatedAt DateTime @updatedAt
+}
+
+model Resource {
+  createdAt   DateTime @default(now())
+  description String?
+  id          String   @id @default(cuid())
+  title       String?
+  updatedAt   DateTime @updatedAt
+  url         String?
+}
+
+enum EnumSessionTypeField {
+  Option1
+}
